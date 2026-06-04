@@ -2,7 +2,7 @@
 
 > Your gateway to the cosmos, powered by NASA's open APIs.
 
-Live site → **[aurora-heroku.vercel.app](https://aurora-heroku.vercel.app)**
+Live site → **[aurora-imran-khans-projects-458b6e01.vercel.app](https://aurora-imran-khans-projects-458b6e01.vercel.app)**
 
 ---
 
