@@ -2,9 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -14,48 +12,88 @@ body {
   overflow-x: hidden;
 }
 
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #0a0f1e; }
-::-webkit-scrollbar-thumb { background: #00d4ff44; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #00d4ff88; }
+/* ── Scrollbar ───────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #050b18; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #00d4ff, #7c3aed);
+  border-radius: 3px;
+}
 
+/* ── Glass card ──────────────────────────────────── */
 .glass-card {
   background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 16px;
+  transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+}
+.glass-card:hover {
+  border-color: rgba(0, 212, 255, 0.22);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.06);
 }
 
+/* ── Glow card ───────────────────────────────────── */
+.glow-card {
+  background: linear-gradient(135deg, rgba(0,212,255,0.07) 0%, rgba(124,58,237,0.05) 100%);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 0 0 1px rgba(0,212,255,0.05) inset, 0 4px 24px rgba(0,0,0,0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.2s;
+}
+.glow-card:hover {
+  border-color: rgba(0, 212, 255, 0.45);
+  box-shadow: 0 0 28px rgba(0,212,255,0.18), 0 4px 24px rgba(0,0,0,0.4);
+  transform: translateY(-2px);
+}
+
+/* ── Text glows ──────────────────────────────────── */
 .cyan-glow-text {
-  text-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+  text-shadow: 0 0 30px rgba(0, 212, 255, 1), 0 0 80px rgba(0, 212, 255, 0.5);
+}
+.purple-glow-text {
+  text-shadow: 0 0 30px rgba(124, 58, 237, 1), 0 0 60px rgba(124, 58, 237, 0.5);
+}
+.gold-glow-text {
+  text-shadow: 0 0 20px rgba(245, 158, 11, 0.9);
 }
 
-.star {
-  position: absolute;
-  background: white;
-  border-radius: 50%;
-  animation: twinkle var(--duration, 3s) var(--delay, 0s) infinite;
-}
-
-@keyframes twinkle {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.1; transform: scale(0.5); }
-}
-
+/* ── Leaflet ─────────────────────────────────────── */
 .leaflet-container {
-  background: #0a0f1e !important;
-  border-radius: 12px;
+  background: #07101f !important;
+  border-radius: 14px;
 }
 
+/* ── Hazardous pulse ─────────────────────────────── */
 @keyframes pulse-red {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
-  50% { box-shadow: 0 0 0 8px rgba(239,68,68,0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.5); }
+  50%       { box-shadow: 0 0 0 8px rgba(239,68,68,0); }
 }
-
 .hazardous { animation: pulse-red 2s infinite; }
 
+/* ── Float ───────────────────────────────────────── */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+  50%       { transform: translateY(-8px); }
 }
-.float { animation: float 6s ease-in-out infinite; }
+.float { animation: float 5s ease-in-out infinite; }
+
+/* ── Shimmer skeleton ────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.09) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 1200px 100%;
+  animation: shimmer 1.6s infinite;
+  border-radius: 6px;
+}
