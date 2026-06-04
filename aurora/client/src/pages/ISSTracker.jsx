@@ -18,9 +18,9 @@ export default function ISSTracker() {
 
     const fetchPos = () => {
       getISSPosition().then(r => {
-        const { latitude, longitude } = r.data.iss_position;
-        const lat = parseFloat(latitude);
-        const lng = parseFloat(longitude);
+        // wheretheiss.at returns { latitude, longitude } directly
+        const lat = parseFloat(r.data.latitude);
+        const lng = parseFloat(r.data.longitude);
         setPos({ lat, lng });
         setTrail(prev => {
           const next = [...prev, [lat, lng]];

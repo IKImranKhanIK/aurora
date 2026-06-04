@@ -31,7 +31,7 @@ export default function Home() {
         const count = r.data.element_count;
         setAsteroidCount(count);
       }).catch(() => {}),
-      getISSPosition().then(r => setIssPos(r.data.iss_position)).catch(() => {}),
+      getISSPosition().then(r => setIssPos({ latitude: r.data.latitude, longitude: r.data.longitude })).catch(() => {}),
     ]).finally(() => setLoading(false));
 
     const issInterval = setInterval(() => {

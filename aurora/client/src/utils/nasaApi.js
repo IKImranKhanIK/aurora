@@ -27,10 +27,10 @@ export const getNASAImages = (query, page = 1) =>
   axios.get(`https://images-api.nasa.gov/search?q=${encodeURIComponent(query)}&media_type=image&page=${page}`);
 
 export const getISSPosition = () =>
-  axios.get("http://api.open-notify.org/iss-now.json");
+  axios.get("https://api.wheretheiss.at/v1/satellites/25544");
 
 export const getISSCrew = () =>
-  axios.get("http://api.open-notify.org/astros.json");
+  axios.get("https://corquaid.github.io/international-space-station-APIs/JSON/people-in-space.json");
 
 export const getSpaceNews = (limit = 20, offset = 0) =>
   axios.get(`https://api.spaceflightnewsapi.net/v4/articles/?limit=${limit}&offset=${offset}`);
