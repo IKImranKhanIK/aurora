@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { getAPOD, getAsteroids, getISSPosition } from "../utils/nasaApi";
-import LoadingSpinner from "../components/LoadingSpinner";
 
 const today = new Date().toISOString().split("T")[0];
 const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
@@ -22,25 +21,25 @@ export default function Home() {
   const [apod, setApod] = useState(null);
   const [asteroidCount, setAsteroidCount] = useState(null);
   const [issPos, setIssPos] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([
-      getAPOD().then(r => setApod(r.data)).catch(() => {}),
-      getAsteroids(yesterday, today).then(r => {
-        const count = r.data.element_count;
-        setAsteroidCount(count);
-      }).catch(() => {}),
-      getISSPosition().then(r => setIssPos({ latitude: r.data.latitude, longitude: r.data.longitude })).catch(() => {}),
-    ]).finally(() => setLoading(false));
+    // Fire all requests independently — page renders immediately,
+    // each stat fills in as its own response arrives
+    getAPOD().then(r => setApod(r.data)).catch(() => {});
+    getAsteroids(yesterday, today)
+      .then(r => setAsteroidCount(r.data.element_count))
+      .catch(() => {});
+    getISSPosition()
+      .then(r => setIssPos({ latitude: r.data.latitude, longitude: r.data.longitude }))
+      .catch(() => {});
 
     const issInterval = setInterval(() => {
-      getISSPosition().then(r => setIssPos(r.data.iss_position)).catch(() => {});
+      getISSPosition()
+        .then(r => setIssPos({ latitude: r.data.latitude, longitude: r.data.longitude }))
+        .catch(() => {});
     }, 5000);
     return () => clearInterval(issInterval);
   }, []);
-
-  if (loading) return <LoadingSpinner text="INITIALIZING AURORA..." />;
 
   return (
     <div className="min-h-screen pt-20">
@@ -61,17 +60,21 @@ export default function Home() {
           </p>
           <p className="text-slate-500 text-sm mb-8">Real-time data from space</p>
 
-          {/* Live stats */}
+          {/* Live stats — each fills in independently */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10 max-w-2xl mx-auto">
             <div className="glass-card p-4 border-space-cyan/20">
               <div className="text-2xl font-space font-bold text-space-cyan">
-                {asteroidCount !== null ? asteroidCount : "—"}
+                {asteroidCount !== null
+                  ? asteroidCount
+                  : <span className="inline-block w-8 h-6 bg-white/10 rounded animate-pulse" />}
               </div>
               <div className="text-xs text-slate-400 mt-1">Near-Earth objects today</div>
             </div>
             <div className="glass-card p-4 border-space-cyan/20">
               <div className="text-sm font-space font-bold text-space-green">
-                {issPos ? `${parseFloat(issPos.latitude).toFixed(2)}° ${parseFloat(issPos.longitude).toFixed(2)}°` : "—"}
+                {issPos
+                  ? `${parseFloat(issPos.latitude).toFixed(2)}° ${parseFloat(issPos.longitude).toFixed(2)}°`
+                  : <span className="inline-block w-24 h-5 bg-white/10 rounded animate-pulse" />}
               </div>
               <div className="text-xs text-slate-400 mt-1">ISS position (live)</div>
             </div>
@@ -83,13 +86,41 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* Today's APOD */}
+      {/* Feature grid — always visible immediately */}
+      <section className="max-w-6xl mx-auto px-4 pb-12">
+        <h2 className="font-space text-2xl font-bold text-white mb-6 text-center">
+          <span className="text-space-purple">EXPLORE</span> THE UNIVERSE
+        </h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {features.map((f, i) => (
+            <motion.div
+              key={f.to}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 * i }}
+            >
+              <Link
+                to={f.to}
+                className="glass-card p-5 flex flex-col items-center text-center hover:border-space-cyan/30 hover:bg-white/[0.06] transition-all duration-300 group block"
+              >
+                <span className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-300">
+                  {f.icon}
+                </span>
+                <h3 className="font-space font-bold text-sm text-white mb-1">{f.title}</h3>
+                <p className="text-slate-500 text-xs">{f.desc}</p>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Today's APOD — fades in when ready */}
       {apod && (
-        <section className="max-w-6xl mx-auto px-4 pb-12">
+        <section className="max-w-6xl mx-auto px-4 pb-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
+            transition={{ duration: 0.5 }}
             className="glass-card overflow-hidden"
           >
             <div className="grid md:grid-cols-2 gap-0">
@@ -132,34 +163,6 @@ export default function Home() {
           </motion.div>
         </section>
       )}
-
-      {/* Feature grid */}
-      <section className="max-w-6xl mx-auto px-4 pb-20">
-        <h2 className="font-space text-2xl font-bold text-white mb-6 text-center">
-          <span className="text-space-purple">EXPLORE</span> THE UNIVERSE
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {features.map((f, i) => (
-            <motion.div
-              key={f.to}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 * i }}
-            >
-              <Link
-                to={f.to}
-                className="glass-card p-5 flex flex-col items-center text-center hover:border-space-cyan/30 hover:bg-white/[0.06] transition-all duration-300 group block"
-              >
-                <span className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-300">
-                  {f.icon}
-                </span>
-                <h3 className="font-space font-bold text-sm text-white mb-1">{f.title}</h3>
-                <p className="text-slate-500 text-xs">{f.desc}</p>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </section>
     </div>
   );
 }
