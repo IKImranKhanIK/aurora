@@ -96,9 +96,11 @@ export default function Home() {
               <div className="relative overflow-hidden" style={{ minHeight: 300 }}>
                 {apod.media_type === "image" ? (
                   <img
-                    src={apod.hdurl || apod.url}
+                    src={apod.url}
                     alt={apod.title}
                     className="w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
                     style={{ minHeight: 300 }}
                   />
                 ) : (

@@ -73,6 +73,8 @@ export default function News() {
                     <img
                       src={art.image_url}
                       alt={art.title}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute top-2 left-2 bg-space-gold/20 border border-space-gold/40 text-space-gold text-xs px-2 py-0.5 rounded-full">
