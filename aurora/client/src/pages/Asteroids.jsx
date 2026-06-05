@@ -4,6 +4,18 @@ import { getAsteroids } from "../utils/nasaApi";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 function kmToMiles(km) { return (km * 0.621371).toFixed(0); }
+
+function sizeComparison(km) {
+  const m = km * 1000;
+  if (m < 1)    return `🪨 grain of sand (${(m * 100).toFixed(0)} cm)`;
+  if (m < 5)    return `🚗 car-sized (${m.toFixed(1)} m)`;
+  if (m < 20)   return `🏠 house-sized (${m.toFixed(0)} m)`;
+  if (m < 100)  return `⚽ football field (${m.toFixed(0)} m)`;
+  if (m < 500)  return `🏙️ city block (${m.toFixed(0)} m)`;
+  if (km < 2)   return `🌆 small city (${km.toFixed(1)} km)`;
+  if (km < 10)  return `🏙️ major city (${km.toFixed(1)} km)`;
+  return `🌍 country-sized (${km.toFixed(0)} km)`;
+}
 function formatDist(d) {
   const km = parseFloat(d.kilometers).toFixed(0);
   return `${parseInt(km).toLocaleString()} km`;
@@ -132,6 +144,7 @@ export default function Asteroids() {
                   <div>
                     <div className="text-slate-300 font-space text-sm font-bold">{sizeKm} km</div>
                     <div className="text-slate-500 text-xs">Est. diameter</div>
+                    <div className="text-slate-600 text-[10px] mt-0.5">{sizeComparison(parseFloat(sizeKm))}</div>
                   </div>
                 </div>
               </motion.div>

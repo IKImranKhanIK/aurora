@@ -22,10 +22,13 @@ export default function Earth() {
   const [selectedImg, setSelectedImg] = useState(null);
 
   useEffect(() => {
-    Promise.all([
-      getEPIC().then(r => setEpicImages((r.data || []).slice(0, 12))).catch(() => setEpicImages([])),
-      getEONET().then(r => setEvents(r.data.events || [])).catch(() => setEvents([])),
-    ]).finally(() => setLoading(false));
+    getEPIC()
+      .then(r => setEpicImages((r.data || []).slice(0, 12)))
+      .catch(() => setEpicImages([]))
+      .finally(() => setLoading(false));
+    getEONET()
+      .then(r => setEvents(r.data.events || []))
+      .catch(() => setEvents([]));
   }, []);
 
   return (
